@@ -13,6 +13,7 @@
 <body class="h-100">
     <div class="w-50 bg-warning float-left" style="height:100%;">
         <h4 class="text-center pt-1">Welcome to Lexicom</h4>
+        <div><span style="color:black;">Lexicom is a free, simple messaging service that lets you communicate quickly and efficiently with your friends, family, and colleagues. Sign up and start chatting with tens of other users today!</span></div> <!-- I don't have an artistic bone in my body so someone is gonna have to make this look presentable -->
     </div>
     <div class="w-50 h-100 p-5 bg-info float-right">
         <div class="bg-light text-center pt-2 pl-5 pr-5 w-100 shadow-lg rounded">
@@ -70,6 +71,11 @@
                     <div class="form-group">
                         <label for="email_setup">Your Email Address</label>
                         <input type="email" class="form-control" id="email_setup" placeholder="example@example.com" required>
+                        <div class="invalid-feedback">Required Field</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password_setup">Your Password</label>
+                        <input type="password" class="form-control" id="password_setup" placeholder="Password" required>
                         <div class="invalid-feedback">Required Field</div>
                     </div>
                     <button type="submit" class="btn btn-warning">Sign up</button>
