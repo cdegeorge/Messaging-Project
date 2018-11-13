@@ -16,9 +16,9 @@
     </div>
     <div class="w-50 h-100 p-5 bg-info float-right">
         <div class="bg-light text-center pt-2 pl-5 pr-5 w-100 shadow-lg rounded">
-            <div style="display:none;">
+            <div id="login">
                 <div><h5>Log in to start messaging</h5></div>
-                <form class="w-75" id="validationForm" novalidate>
+                <form class="pb-1" id="loginForm" novalidate>
                     <div class="form-group">
                         <input type="text" class="form-control" id="email" placeholder="Username or email" required>
                         <div class="invalid-feedback">Required Field</div>
@@ -27,16 +27,31 @@
                         <input type="password" class="form-control" id="password" placeholder="Password" required>
                         <div class="invalid-feedback">Required Field</div>
                     </div>
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="remember">
-                        <label class="form-check-label" for="remember">Remember me</label>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col text-right form-group form-check">
+                                <input type="checkbox" id="remember">
+                                <label class="form-check-label" for="remember">Remember me</label>
+                            </div>
+                            <div class="col text-left">
+                                <span style="cursor:pointer; color:deepskyblue;">Forgot password</span>
+                            </div>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-warning">Log in</button>
                 </form>
+                <div class="container pb-3">
+                    <div class="row">
+                        <div class="col">
+                            <span style="color:darkgrey;">First time?</span>
+                            <span style="cursor:pointer; color:deepskyblue;" onclick="createAccount();">Create an account</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div>
+            <div id="signup" style="display:none;">
                 <div><h5>Join the least used messaging service today</h5></div>
-                <form class="pb-3" id="validationForm" novalidate>
+                <form class="pb-3" id="signupForm" novalidate>
                     <div class="form-group">
                         <label for="name">Your Name</label>
                         <input type="text" class="form-control" id="name" placeholder="Full Name" required>
@@ -70,12 +85,30 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script>
 
-    //require user to input username and password if attempting to sign in
+    //claims to be undefined?
+    function createAccount() {
+        console.log("Click");
+        $('#login').hide();
+        $('#signup').show();
+    };
+
+    //notify user if form information is invalid
     (function () {
         'use strict';
         window.addEventListener('load', function () {
-            var forms = $("#validationForm");
-            Array.prototype.filter.call(forms, function (form) {
+            var loginForm = $("#loginForm");
+            Array.prototype.filter.call(loginForm, function (form) {
+
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+            var signupForm = $("#signupForm");
+            Array.prototype.filter.call(signupForm, function (form) {
 
                 form.addEventListener('submit', function (event) {
                     if (!form.checkValidity()) {
