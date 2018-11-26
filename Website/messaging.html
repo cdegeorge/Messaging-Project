@@ -13,37 +13,50 @@
 <body class="h-100">
     <div class="h-100">
         <div data-role="navview">
-            <div class="navview-pane text-center">
-                <div class="suggest-box pb-3 pt-2">
+            <div class="navview-pane text-center bg-white border-right bd-default">
+                <div class="suggest-box pb-3 pt-2 border-bottom bd-default" style="overflow:hidden;">
                     <input data-role="search" data-clear-button="false">
                 </div>
                 <ul class="navview-menu h-100 pb-5">
                     <li>
-                        <a href="#" class="border bd-gray border-radius-3">
+                        <a href="#">
                             <span class="w-100" style="height:50px;">Friend's Name</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="border bd-gray border-radius-3">
+                        <a href="#">
                             <span class="w-100" style="height:50px;">Friend's Name 2</span>
                         </a>
                     </li>
                 </ul>
             </div>
             <div class="navview-content h-100">
-                <div class="row" style="height:15%;">
-                    <div class="cell bg-lightGray">
+                <div class="row border-bottom bd-default text-center pb-3 pt-2">
+                    <div class="cell">
                         Header
                     </div>
                 </div>
-                <div class="row h-100">
+                <div class="row bg-grayWhite" style="height:78%;">
                     <div class="cell">
-                        Content Placeholder
+                        <div class="row pl-5 pr-5">
+                            <div class="cell p-1">
+                                <button class="button secondary rounded disabled">Message</button>
+                            </div>
+                        </div>
+                        <div class="row pl-5 pr-5">
+                            <div class="cell p-1 text-right">
+                                <button class="button primary rounded disabled">Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row w-100 pb-1 pt-1 pl-3 border-top bd-default bg-white">
+                    <div class="cell">
+                        <textarea class="c-pointer" data-role="textarea" data-max-height="200" data-append="<span class='fg-blue'>Send</span>" placeholder="Type a message"></textarea>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </body>
 </html>
 
