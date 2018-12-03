@@ -1,14 +1,95 @@
-<?php include('server.php') ?>
-<?php include('errors.php'); ?>
+
+<?php
+session_start();
+
+$username = "";
+$email = "";
+$errors = array();
+
+// connect to database
+$db = mysqli_connect("localhost", "root", "", "lexicom");
+
+// register user
+if (isset($_POST['register'])) {
+	// receives all values from the form
+	$acct_id = rand(0, getrandmax());
+	$name = mysqli_real_escape_string($db, $_POST['name']);
+	$birth_date = mysqli_real_escape_string($db, $_POST['birth']);
+	$email = mysqli_real_escape_string($db, $_POST['email_setup']);
+	$username = mysqli_real_escape_string($db, $_POST['username_setup']);
+	$password = mysqli_real_escape_string($db, $_POST['password_setup']);
+
+	// make sure form is completely filled
+	if (empty($name)) { array_push($errors, "Full name is required."); }
+	if (empty($birth_date)) { array_push($errors, "Birthday is required."); }
+	if (empty($email)) { array_push($errors, "Email address is required."); }
+	if (empty($username)) { array_push($errors, "Username is required."); }
+	if (empty($password)) { array_push($errors, "Password is required."); }
+
+	$account_check_query = "SELECT * FROM account WHERE acct_id = '$acct_id' OR username='$username' OR email='$email' LIMIT 1";
+	$result = mysqli_query($db, $account_check_query);
+	$account = mysqli_fetch_assoc($result);
+
+	if($account) {
+		if ($account['acct_id'] == $acct_id) {
+			$acct_id = rand(0, getrandmax());
+		}
+		if ($account['username'] == $username) {
+			array_push($errors, "Username already taken.");
+		}
+		if ($account['email'] == $email) {
+			array_push($errors, "This email address is already in use.");
+		}
+	}
+
+	if(count($errors) == 0) {
+		//$password = md5($password); // encrypt the password
+		$query = "INSERT INTO account(acct_id, name, birth_date, email, username, password) VALUES ('$acct_id', '$name', '$birth_date', '$email', '$username', '$password')";
+		mysqli_query($db, $query);
+		$_SESSION['username'] = $username;
+		$_SESSION['success'] = "You are now logged in.";
+		header('location: messaging.php');
+	}
+}
+
+// login user
+if (isset($_POST['login'])) {
+	$username = mysqli_real_escape_string($db, $_POST['username']);
+	$password = mysqli_real_escape_string($db, $_POST['password']);
+
+	if (empty($username)) {
+		array_push($errors, "Username required.");
+	}
+	if (empty($password)) {
+		array_push($errors, "Password required.");
+	}
+
+	if (count($errors) == 0) {
+		//$password = md5($password);
+		$query = "SELECT * FROM account WHERE username='$username' AND password='$password'";
+		$results = mysqli_query($db, $query);
+		if (mysqli_num_rows($results) == 1) {
+			$_SESSION['username'] = $username;
+			$_SESSION['success'] = "You are now logged in.";
+			header("location: messaging.php");
+		}
+		else {
+			//array_push($errors, "Your username and/or password is incorrect.");
+            echo "<script type='text/javascript'>alert('Incorrect username or password');</script>";
+            header("location: index.php");
+		}
+	}
+}
+?>
+
 <!doctype html>
 <html lang="en" class="h-100">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <!-- Metro 4 -->
-    <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-all.min.css">
+    <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-all.min.css" />
 
     <title>Lexicom Messaging</title>
     <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
@@ -24,18 +105,20 @@
     <div class="w-50 h-100 p-5 bg-blue float-right">
         <div class="bg-light text-center pt-2 pl-5 pr-5 w-100 shadow-lg rounded">
             <div id="login">
-                <div><h5>Log in to start messaging</h5></div>
+                <div>
+                    <h5>Log in to start messaging</h5>
+                </div>
                 <!-- <form class="custom-validation pb-1" id="loginForm">-->
-				<form method="post" action="server.php">
+                <form method="post" action="">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="username" placeholder="Username" required>
+                        <input type="text" class="form-control" name="username" placeholder="Username" required />
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        <input type="password" class="form-control" name="password" placeholder="Password" required />
                     </div>
                     <div class="row">
                         <div class="cell text-right form-group">
-                            <input type="checkbox">
+                            <input type="checkbox" />
                             Remember me
                         </div>
                         <div class="cell text-left pb-1">
@@ -54,27 +137,34 @@
                 </div>
             </div>
             <div id="signup" style="display:none;">
-                <div><h5>Create your Account</h5></div>
+                <div>
+                    <h5>Create your Account</h5>
+                </div>
                 <!-- <form class="custom-validation pb-1" id="signupForm" novalidate>-->
-				<form method="post" action="server.php">
+                <form method="post" action="server.php">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="name" placeholder="Full Name" required>
+                        <input type="text" class="form-control" name="name" placeholder="Full Name" required />
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" name="birth" placeholder="Birthday" required>
+                        <input type="text" class="form-control" name="birth" placeholder="Birthday" required />
                     </div>
                     <div class="form-group">
-                        <input type="email" class="form-control" name="email_setup" placeholder="Email Address" required>
+                        <input type="email" class="form-control" name="email_setup" placeholder="Email Address" required />
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" name="username_setup" placeholder="Username" required>
+                        <input type="text" class="form-control" name="username_setup" placeholder="Username" required />
                     </div>
                     <div class="form-group pb-3">
-                        <input type="password" class="form-control" name="password_setup" placeholder="Password" required>
+                        <input type="password" class="form-control" name="password_setup" placeholder="Password" required />
                     </div>
                     <button type="submit" class="button yellow" name="register">Sign up</button>
                 </form>
                 <div class="container pb-3">
+                    <div class="row">
+                        <div class="cell">
+                            <?php include('errors.php'); ?>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="cell">
                             <span style="color:darkgrey;">Existing user?</span>
@@ -97,35 +187,5 @@
         $('#login').toggle();
         $('#signup').toggle();
     };
-
-    //notify user if form information is invalid
-    /*
-    (function () {
-        'use strict';
-        window.addEventListener('load', function () {
-            var loginForm = $("#loginForm");
-            Array.prototype.filter.call(loginForm, function (form) {
-
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-            var signupForm = $("#signupForm");
-            Array.prototype.filter.call(signupForm, function (form) {
-
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();*/
 
 </script>
