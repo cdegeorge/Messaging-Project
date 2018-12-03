@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+<?php
+	session_start();
+	
+	if (!isset($_SESSION['username'])) {
+		$_SESSION['msg'] = "You must log in first.";
+		header('location: index.php');
+	}
+	if (isset($_GET['logout'])) {
+		session_destroy();
+		unset($_SESSION['username']);
+		header("location: index.php");
+	}
+?>
+<!DOCTYPE html>
 <html class="h-100" lang="en">
 <head>
     <!-- Required meta tags -->
@@ -18,7 +31,7 @@
                     <input data-role="search" data-clear-button="false">
                 </div>
                 <ul class="navview-menu h-100 pb-5">
-                    <li>
+					<li>
                         <a href="#">
                             <span class="w-100" style="height:50px;">Friend's Name</span>
                         </a>
@@ -35,6 +48,7 @@
                     <div class="cell">
                         Header
                     </div>
+					<p><a href="messaging.php?logout='1'" style="color: red;">Logout</a></p>
                 </div>
                 <div class="row bg-grayWhite" style="height:78%;">
                     <div class="cell">
