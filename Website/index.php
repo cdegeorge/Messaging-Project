@@ -1,4 +1,6 @@
-﻿<!doctype html>
+<?php include('server.php') ?>
+<?php include('errors.php'); ?>
+<!doctype html>
 <html lang="en" class="h-100">
 <head>
     <!-- Required meta tags -->
@@ -23,12 +25,13 @@
         <div class="bg-light text-center pt-2 pl-5 pr-5 w-100 shadow-lg rounded">
             <div id="login">
                 <div><h5>Log in to start messaging</h5></div>
-                <form class="custom-validation pb-1" id="loginForm">
+                <!-- <form class="custom-validation pb-1" id="loginForm">-->
+				<form method="post" action="server.php">
                     <div class="form-group">
-                        <input type="text" class="form-control" id="email" placeholder="Username or email" required>
+                        <input type="text" class="form-control" name="username" placeholder="Username" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
+                        <input type="password" class="form-control" name="password" placeholder="Password" required>
                     </div>
                     <div class="row">
                         <div class="cell text-right form-group">
@@ -39,7 +42,7 @@
                             <span style="cursor:pointer; color:deepskyblue;">Forgot password</span>
                         </div>
                     </div>
-                    <button type="submit" class="button yellow">Log in</button>
+                    <button type="submit" class="button yellow" name="login">Log in</button>
                 </form>
                 <div class="pb-3">
                     <div class="row">
@@ -52,23 +55,24 @@
             </div>
             <div id="signup" style="display:none;">
                 <div><h5>Create your Account</h5></div>
-                <form class="custom-validation pb-1" id="signupForm" novalidate>
+                <!-- <form class="custom-validation pb-1" id="signupForm" novalidate>-->
+				<form method="post" action="server.php">
                     <div class="form-group">
-                        <input type="text" class="form-control" id="name" placeholder="Full Name" required>
+                        <input type="text" class="form-control" name="name" placeholder="Full Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" id="birth" placeholder="Birthday" required>
+                        <input type="text" class="form-control" name="birth" placeholder="Birthday" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" class="form-control" id="email_setup" placeholder="Email Address" required>
+                        <input type="email" class="form-control" name="email_setup" placeholder="Email Address" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" id="username_setup" placeholder="Username" required>
+                        <input type="text" class="form-control" name="username_setup" placeholder="Username" required>
                     </div>
                     <div class="form-group pb-3">
-                        <input type="password" class="form-control" id="password_setup" placeholder="Password" required>
+                        <input type="password" class="form-control" name="password_setup" placeholder="Password" required>
                     </div>
-                    <button type="submit" class="button yellow">Sign up</button>
+                    <button type="submit" class="button yellow" name="register">Sign up</button>
                 </form>
                 <div class="container pb-3">
                     <div class="row">
