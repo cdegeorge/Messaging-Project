@@ -1,5 +1,7 @@
 
 <?php
+include('errors.php');
+
 session_start();
 
 $username = "";
@@ -74,9 +76,7 @@ if (isset($_POST['login'])) {
 			header("location: messaging.php");
 		}
 		else {
-			//array_push($errors, "Your username and/or password is incorrect.");
-            echo "<script type='text/javascript'>alert('Incorrect username or password');</script>";
-            header("location: index.php");
+			array_push($errors, "Your username and/or password is incorrect.");
 		}
 	}
 }
@@ -113,8 +113,13 @@ if (isset($_POST['login'])) {
                     <div class="form-group">
                         <input type="text" class="form-control" name="username" placeholder="Username" required />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group pb-3">
                         <input type="password" class="form-control" name="password" placeholder="Password" required />
+                    </div>
+                    <div class="row pb-3">
+                        <div class="cell fg-red">
+                            <?php printErrors($errors); ?>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="cell text-right form-group">
@@ -141,7 +146,7 @@ if (isset($_POST['login'])) {
                     <h5>Create your Account</h5>
                 </div>
                 <!-- <form class="custom-validation pb-1" id="signupForm" novalidate>-->
-                <form method="post" action="server.php">
+                <form method="post" action="">
                     <div class="form-group">
                         <input type="text" class="form-control" name="name" placeholder="Full Name" required />
                     </div>
@@ -157,12 +162,17 @@ if (isset($_POST['login'])) {
                     <div class="form-group pb-3">
                         <input type="password" class="form-control" name="password_setup" placeholder="Password" required />
                     </div>
+                    <div class="row pb-3">
+                        <div class="cell fg-red">
+                            <?php printErrors($errors); ?>
+                        </div>
+                    </div>
                     <button type="submit" class="button yellow" name="register">Sign up</button>
                 </form>
                 <div class="container pb-3">
                     <div class="row">
                         <div class="cell">
-                            <?php include('errors.php'); ?>
+                            
                         </div>
                     </div>
                     <div class="row">
