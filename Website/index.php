@@ -48,7 +48,7 @@ if (isset($_POST['register'])) {
 		//$password = md5($password); // encrypt the password
 		$query = "INSERT INTO account(acct_id, name, birth_date, email, username, password) VALUES ('$acct_id', '$name', '$birth_date', '$email', '$username', '$password')";
 		mysqli_query($db, $query);
-		$_SESSION['username'] = $username;
+		$_SESSION['acct_id'] = $acct_id;
 		$_SESSION['success'] = "You are now logged in.";
 		header('location: messaging.php');
 	}
@@ -71,9 +71,13 @@ if (isset($_POST['login'])) {
 		$query = "SELECT * FROM account WHERE username='$username' AND password='$password'";
 		$results = mysqli_query($db, $query);
 		if (mysqli_num_rows($results) == 1) {
-			$_SESSION['username'] = $username;
+			$query2 = "SELECT acct_id FROM account WHERE username='$username' AND password='$password'";
+			$result2 = mysqli_query($db, $query2);
+			while($row = mysqli_fetch_assoc($result2))
+				$acct_id = $row["acct_id"];
+			$_SESSION['acct_id'] = $acct_id;
 			$_SESSION['success'] = "You are now logged in.";
-			header("location: messaging.php");
+			header('location: messaging.php');
 		}
 		else {
 			array_push($errors, "Your username and/or password is incorrect.");
