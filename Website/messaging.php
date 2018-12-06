@@ -12,6 +12,21 @@ if (isset($_GET['logout'])) {
 }
 
 $db = mysqli_connect("localhost", "root", "", "lexicom");
+
+$acct_id = $_SESSION['acct_id'];
+$partner_id = $_COOKIE["contact"];
+
+if (isset($_POST['submit']) && isset($_SERVER['REQUEST_URI'])) {
+	$message = htmlspecialchars($_POST['message_text']);
+	$content = mysqli_real_escape_string($db, $message);
+
+	$query = "INSERT INTO messages (sender_id, receiver_id, time_stamp, content) VALUES ('$acct_id', '$partner_id', CURRENT_TIMESTAMP, '$content')";
+	mysqli_query($db, $query);
+	$updatecontactquery = "UPDATE contacts SET most_recent_chat = CURRENT_TIMESTAMP WHERE (contact1='$acct_id' AND contact2='$partner_id') OR (contact1='$partner_id' AND contact2='$acct_id')";
+	mysqli_query($db, $updatecontactquery);
+	header('Location: ' . $_SERVER['REQUEST_URI']);
+	exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -40,22 +55,40 @@ $db = mysqli_connect("localhost", "root", "", "lexicom");
                     </div>
                 </div>
                 <ul class="navview-menu h-100 pb-5">
-                    <li>
+					<?php
+					$contactsQuery = "SELECT * FROM contacts WHERE contact1='$acct_id' or contact2='$acct_id' ORDER BY most_recent_chat DESC";
+					$contactlist = mysqli_query($db, $contactsQuery);
+					if(mysqli_num_rows($contactlist) > 0) {
+						while($row = mysqli_fetch_assoc($contactlist)) {
+					?>
+					<li>
                         <a href="#">
-                            <span class="w-100" style="height:50px;" onclick="changePartner(193920042)" ;>Friend's Name</span><!-- REPLACE PARAMETER WITH PHP THAT PASSES CONTACT ID -->
+							<?php
+							if ($row["contact1"] == $acct_id) 
+								$contactid = $row["contact2"];
+							else
+								$contactid = $row["contact1"];
+							
+							$getcontactinfo = mysqli_query($db, "SELECT * FROM account WHERE acct_id='$contactid'");
+							$contact = mysqli_fetch_assoc($getcontactinfo);
+							
+							?>
+								<span class="w-100" style="height:50px;" onclick="changePartner(<?php echo $contactid; ?>)" ;><?php echo $contact["username"]; ?></span>
                         </a>
                     </li>
-                    <li>
-                        <a href="#">
-                            <span class="w-100" style="height:50px;" onclick="changePartner(755540383)" ;>Friend's Name 2</span><!-- REPLACE PARAMETER WITH PHP THAT PASSES CONTACT ID -->
-                        </a>
-                    </li>
+					<?php
+						}
+					}
+					?>
                 </ul>
             </div>
             <div class="navview-content h-100">
                 <div class="row border-bottom bd-default text-center pb-3 pt-2">
                     <div class="cell pt-2">
-                        Header
+						<?php
+						$getcurrentcontact = mysqli_query($db, "SELECT * FROM account WHERE acct_id='$partner_id'");
+						$currentcontact = mysqli_fetch_assoc($getcurrentcontact);
+						echo $currentcontact["username"]; ?>
                     </div>
                     <div class="cell-2 text-right pr-3">
                         <ul class="h-menu">
@@ -75,8 +108,6 @@ $db = mysqli_connect("localhost", "root", "", "lexicom");
                 <div class="row bg-grayWhite" style="height:78%;">
                     <div class="cell">
                         <?php
-                        $acct_id = $_SESSION['acct_id'];
-                        $partner_id = $_COOKIE["contact"];
                         $sql = "SELECT * FROM messages WHERE (sender_id='$acct_id' AND receiver_id='$partner_id') OR (sender_id='$partner_id' AND receiver_id='$acct_id') ORDER BY time_stamp";
                         $result = mysqli_query($db, $sql);
 
@@ -101,18 +132,6 @@ $db = mysqli_connect("localhost", "root", "", "lexicom");
                             }
                         }
                             ?>
-                            <!--
-                        <div class="row pl-5 pr-5">
-                            <div class="cell p-1">
-                                <button class="button secondary rounded disabled">Message</button>
-                            </div>
-                        </div>
-                        <div class="row pl-5 pr-5">
-                            <div class="cell p-1 text-right">
-                                <button class="button primary rounded disabled">Message</button>
-                            </div>
-                        </div>
-					-->
                         </div>
                     </div>
                     <div class="row w-100 pb-1 pt-1 pl-3 border-top bd-default bg-white">
@@ -125,33 +144,22 @@ $db = mysqli_connect("localhost", "root", "", "lexicom");
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Contacts Window -->
-    <div class="info-box" id="contacts_infoBox" data-role="infobox">
-        <span class="button square closer"></span>
-        <div class="info-box-content">
-            <div class="text-center border-bottom bd-black pt-2 pb-2">Contacts</div>
-            <div style="max-height:500px; overflow-y:scroll">
-                <input type="text" id="contact_add" placeholder="Add a contact" />
-                <div class="c-pointer border-bottom bd-default">Contact 1</div>
-                <div class="c-pointer border-bottom bd-default">Contact 2</div>
-                <div class="c-pointer border-bottom bd-default">Contact 3</div>
+        <!-- Contacts Window -->
+        <div class="info-box" id="contacts_infoBox" data-role="infobox">
+            <span class="button square closer"></span>
+            <div class="info-box-content">
+                <div class="text-center border-bottom bd-black pt-2 pb-2">Contacts</div>
+                <div style="max-height:500px; overflow-y:scroll">
+                    <div class="cell pl-2"><input type="text" data-role="input" placeholder="Add Contact" /></div>
+                    <div class="c-pointer border-bottom bd-default">Contact 1</div>
+                    <div class="c-pointer border-bottom bd-default">Contact 2</div>
+                    <div class="c-pointer border-bottom bd-default">Contact 3</div>
+                </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-
-<?php
-if (isset($_POST['submit'])) {
-	$message = htmlspecialchars($_POST['message_text']);
-	$content = mysqli_real_escape_string($db, $message);
-
-	$query = "INSERT INTO messages (sender_id, receiver_id, time_stamp, content) VALUES ('$acct_id', '$partner_id', CURRENT_TIMESTAMP, '$content')";
-	mysqli_query($db, $query);
-	//header("Refresh:0");
-}
-?>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.metroui.org.ua/v4/js/metro.min.js"></script>
@@ -162,14 +170,5 @@ if (isset($_POST['submit'])) {
         document.cookie = escape(name) + "=" + escape(contact_id);
         location.reload();
     };
-
-    var input = document.getElementById("contact_add");
-    input.addEventListener("keyup", function (event) {
-        if (event.keyCode === 13) {
-            var contact_name = input.value;
-            document.cookie = escape("contact_name") + "=" + escape(contact_name);
-            console.log("Submit");
-        }
-    });
 
 </script>
