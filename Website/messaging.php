@@ -125,17 +125,17 @@ $db = mysqli_connect("localhost", "root", "", "lexicom");
                 </div>
             </div>
         </div>
-        <!-- Contacts Window -->
-        <div class="info-box" id="contacts_infoBox" data-role="infobox">
-            <span class="button square closer"></span>
-            <div class="info-box-content">
-                <div class="text-center border-bottom bd-black pt-2 pb-2">Contacts</div>
-                <div style="max-height:500px; overflow-y:scroll">
-                    <div class="cell pl-2"><input type="text" data-role="input" placeholder="Add Contact" /></div>
-                    <div class="c-pointer border-bottom bd-default">Contact 1</div>
-                    <div class="c-pointer border-bottom bd-default">Contact 2</div>
-                    <div class="c-pointer border-bottom bd-default">Contact 3</div>
-                </div>
+    </div>
+    <!-- Contacts Window -->
+    <div class="info-box" id="contacts_infoBox" data-role="infobox">
+        <span class="button square closer"></span>
+        <div class="info-box-content">
+            <div class="text-center border-bottom bd-black pt-2 pb-2">Contacts</div>
+            <div style="max-height:500px; overflow-y:scroll">
+                <input type="text" id="contact_add" placeholder="Add a contact" />
+                <div class="c-pointer border-bottom bd-default">Contact 1</div>
+                <div class="c-pointer border-bottom bd-default">Contact 2</div>
+                <div class="c-pointer border-bottom bd-default">Contact 3</div>
             </div>
         </div>
     </div>
@@ -162,5 +162,14 @@ if (isset($_POST['submit'])) {
         document.cookie = escape(name) + "=" + escape(contact_id);
         location.reload();
     };
+
+    var input = document.getElementById("contact_add");
+    input.addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+            var contact_name = input.value;
+            document.cookie = escape("contact_name") + "=" + escape(contact_name);
+            console.log("Submit");
+        }
+    });
 
 </script>
