@@ -49,6 +49,7 @@ if (isset($_POST['register'])) {
 		$query = "INSERT INTO account(acct_id, name, birth_date, email, username, password) VALUES ('$acct_id', '$name', '$birth_date', '$email', '$username', '$password')";
 		mysqli_query($db, $query);
 		$_SESSION['acct_id'] = $acct_id;
+		$_SESSION['username'] = $username;
 		$_SESSION['success'] = "You are now logged in.";
 		header('location: messaging.php');
 	}
@@ -76,6 +77,7 @@ if (isset($_POST['login'])) {
 			while($row = mysqli_fetch_assoc($result2))
 				$acct_id = $row["acct_id"];
 			$_SESSION['acct_id'] = $acct_id;
+			$_SESSION['username'] = $acct_id;
 			$_SESSION['success'] = "You are now logged in.";
 			header('location: messaging.php');
 		}
