@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['acct_id'])) {
@@ -61,7 +61,7 @@ $db = mysqli_connect("localhost", "root", "", "lexicom");
                         <ul class="h-menu">
                             <li>
                                 <a href="#" class="dropdown-toggle">
-                                    <?php echo "Username here"//$_SESSION['username']; ?>
+                                    <?php echo $_SESSION['username']; ?>
                                 </a>
                                 <ul class="d-menu" data-role="dropdown">
                                     <li>
@@ -149,7 +149,7 @@ if (isset($_POST['submit'])) {
 
 	$query = "INSERT INTO messages (sender_id, receiver_id, time_stamp, content) VALUES ('$acct_id', '$partner_id', CURRENT_TIMESTAMP, '$content')";
 	mysqli_query($db, $query);
-	header("Refresh:0");
+	//header("Refresh:0");
 }
 ?>
 
