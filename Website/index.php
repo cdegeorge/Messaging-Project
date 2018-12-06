@@ -77,7 +77,7 @@ if (isset($_POST['login'])) {
 			while($row = mysqli_fetch_assoc($result2))
 				$acct_id = $row["acct_id"];
 			$_SESSION['acct_id'] = $acct_id;
-			$_SESSION['username'] = $acct_id;
+			$_SESSION['username'] = $username;
 			$_SESSION['success'] = "You are now logged in.";
 			header('location: messaging.php');
 		}
